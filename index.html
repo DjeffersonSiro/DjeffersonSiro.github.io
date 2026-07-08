@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Djefferson — Ingénieur Réseaux & Télécoms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B1120;
+    --surface: #121B2E;
+    --surface-alt: #182238;
+    --text: #E7ECF5;
+    --text-muted: #8B96AC;
+    --ok: #34D9A6;
+    --warn: #F2A544;
+    --border: #24304A;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-weight:300;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{ font-family:'Space Grotesk', sans-serif; font-weight:600; letter-spacing:-0.01em; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; text-decoration:none; }
+
+  /* ---- background grid texture ---- */
+  .grid-bg{
+    position:fixed; inset:0; z-index:-1;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity:0.12;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  }
+
+  header{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 18px 6vw;
+    background:rgba(11,17,32,0.85);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .logo{ font-size:1rem; font-weight:700; display:flex; align-items:center; gap:8px; }
+  .logo .dot{ width:8px; height:8px; border-radius:50%; background:var(--ok); box-shadow:0 0 8px var(--ok); }
+  nav{ display:flex; gap:28px; }
+  nav a{ font-size:0.85rem; color:var(--text-muted); font-family:'IBM Plex Mono',monospace; transition:color .2s; }
+  nav a:hover{ color:var(--ok); }
+
+  /* ---- HERO ---- */
+  .hero{
+    min-height:92vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding: 0 6vw;
+    position:relative;
+  }
+  .status-row{
+    display:flex; align-items:center; gap:10px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--ok);
+    margin-bottom: 28px; letter-spacing:0.04em;
+  }
+  .status-row .pulse{
+    width:9px; height:9px; border-radius:50%; background:var(--ok);
+    box-shadow:0 0 0 0 rgba(52,217,166,0.6);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(52,217,166,0.55); }
+    70%{ box-shadow:0 0 0 10px rgba(52,217,166,0); }
+    100%{ box-shadow:0 0 0 0 rgba(52,217,166,0); }
+  }
+  .hero h1{
+    font-size: clamp(2.4rem, 6vw, 4.6rem);
+    line-height:1.05;
+    max-width:14ch;
+  }
+  .hero h1 span{ color:var(--ok); }
+  .hero p.role{
+    margin-top:20px; font-size:clamp(1rem,2vw,1.25rem); color:var(--text-muted); max-width:52ch; font-weight:300;
+  }
+  .hero-cta{ margin-top:36px; display:flex; gap:16px; flex-wrap:wrap; }
+  .btn{
+    padding:13px 26px; border-radius:6px; font-size:0.9rem; font-weight:500;
+    font-family:'IBM Plex Mono',monospace; transition:all .2s; display:inline-flex; align-items:center; gap:8px;
+    border:1px solid var(--border);
+  }
+  .btn-primary{ background:var(--ok); color:#0B1120; border-color:var(--ok); }
+  .btn-primary:hover{ background:#28c096; }
+  .btn-ghost:hover{ border-color:var(--ok); color:var(--ok); }
+
+  /* network signature graphic */
+  .net-graphic{
+    position:absolute; right:4vw; top:50%; transform:translateY(-50%);
+    width:min(38vw, 420px); opacity:0.9;
+  }
+  .net-graphic svg{ width:100%; height:auto; }
+  .net-node{ fill:var(--ok); }
+  .net-node.warn{ fill:var(--warn); }
+  .net-line{ stroke:var(--border); stroke-width:1.4; }
+  .net-pulse{ animation: nodepulse 3s ease-in-out infinite; transform-origin:center; }
+  @keyframes nodepulse{
+    0%,100%{ opacity:1; r:5; }
+    50%{ opacity:0.4; r:7; }
+  }
+
+  section{ padding: 110px 6vw; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--warn);
+    text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px;
+  }
+  section h2{ font-size:clamp(1.6rem,3.4vw,2.4rem); margin-bottom:38px; max-width:22ch; }
+
+  /* ---- ABOUT ---- */
+  .about-grid{ display:grid; grid-template-columns: 1.2fr 1fr; gap:60px; }
+  .about-grid p{ color:var(--text-muted); font-size:1.02rem; max-width:58ch; margin-bottom:16px; }
+  .about-grid p strong{ color:var(--text); font-weight:500; }
+  .info-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:26px;
+    display:flex; flex-direction:column; gap:16px; height:fit-content;
+  }
+  .info-row{ display:flex; justify-content:space-between; font-size:0.9rem; border-bottom:1px dashed var(--border); padding-bottom:12px; }
+  .info-row:last-child{ border-bottom:none; padding-bottom:0; }
+  .info-row .k{ color:var(--text-muted); font-family:'IBM Plex Mono',monospace; font-size:0.82rem; }
+  .info-row .v{ font-weight:500; text-align:right; }
+
+  /* ---- SKILLS / MODULES ---- */
+  .modules{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px; }
+  .module{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:22px;
+    transition:transform .2s, border-color .2s;
+  }
+  .module:hover{ transform:translateY(-4px); border-color:var(--ok); }
+  .module .m-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .module h3{ font-size:1.02rem; }
+  .badge{
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem; padding:3px 9px; border-radius:20px;
+    border:1px solid var(--ok); color:var(--ok); white-space:nowrap;
+  }
+  .module ul{ list-style:none; margin-top:6px; }
+  .module li{ color:var(--text-muted); font-size:0.88rem; padding:3px 0; }
+  .module li::before{ content:"› "; color:var(--ok); }
+
+  /* ---- TIMELINE ---- */
+  .timeline{ position:relative; padding-left:32px; }
+  .timeline::before{ content:""; position:absolute; left:6px; top:6px; bottom:6px; width:1px; background:var(--border); }
+  .tl-item{ position:relative; padding-bottom:44px; }
+  .tl-item:last-child{ padding-bottom:0; }
+  .tl-item::before{
+    content:""; position:absolute; left:-32px; top:4px; width:13px; height:13px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--ok);
+  }
+  .tl-date{ font-family:'IBM Plex Mono',monospace; font-size:0.8rem; color:var(--warn); margin-bottom:6px; display:block; }
+  .tl-item h3{ font-size:1.15rem; margin-bottom:6px; }
+  .tl-item .org{ color:var(--text-muted); font-size:0.92rem; margin-bottom:10px; }
+  .tl-item p.desc{ color:var(--text-muted); font-size:0.92rem; max-width:60ch; }
+
+  /* ---- PROJECTS ---- */
+  .projects-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:22px; }
+  .project-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden;
+    display:flex; flex-direction:column; transition:transform .2s, border-color .2s;
+  }
+  .project-card:hover{ transform:translateY(-4px); border-color:var(--warn); }
+  .project-thumb{
+    height:130px; background:
+      repeating-linear-gradient(135deg, var(--surface-alt), var(--surface-alt) 10px, var(--surface) 10px, var(--surface) 20px);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; color:var(--text-muted); font-size:0.75rem; letter-spacing:0.05em;
+  }
+  .project-body{ padding:22px; display:flex; flex-direction:column; gap:10px; flex:1; }
+  .project-body .p-status{ display:flex; justify-content:space-between; align-items:center; }
+  .project-body h3{ font-size:1.05rem; }
+  .status-pending{ font-family:'IBM Plex Mono',monospace; font-size:0.68rem; padding:3px 9px; border-radius:20px; border:1px solid var(--warn); color:var(--warn); }
+  .project-body p{ color:var(--text-muted); font-size:0.88rem; flex:1; }
+  .project-tags{ display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+  .tag{ font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-muted); border:1px solid var(--border); padding:3px 8px; border-radius:5px; }
+
+  /* ---- CONTACT ---- */
+  .contact-wrap{ display:flex; flex-direction:column; align-items:flex-start; gap:28px; }
+  .contact-links{ display:flex; gap:18px; flex-wrap:wrap; }
+  footer{ padding:32px 6vw; text-align:center; color:var(--text-muted); font-size:0.8rem; font-family:'IBM Plex Mono',monospace; }
+
+  @media(max-width:800px){
+    .about-grid{ grid-template-columns:1fr; }
+    .net-graphic{ display:none; }
+    nav{ display:none; }
+  }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<header>
+  <div class="logo"><span class="dot"></span> DJEFFERSON.SYS</div>
+  <nav>
+    <a href="#about">À propos</a>
+    <a href="#skills">Compétences</a>
+    <a href="#experience">Expérience</a>
+    <a href="#projects">Projets</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="status-row"><span class="pulse"></span> DISPONIBLE — OUVERT AUX OPPORTUNITÉS</div>
+  <h1>Je supervise des<br>réseaux <span>quand ça compte</span>.</h1>
+  <p class="role">Ingénieur Front Office spécialisé en supervision RAN (2G/3G/4G/5G) — en transition vers un master en informatique, orienté réseaux &amp; cybersécurité, à l'Université de Moncton.</p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">Voir mes projets →</a>
+    <a href="#cv-download" class="btn btn-ghost">Télécharger mon CV</a>
+  </div>
+
+  <div class="net-graphic">
+    <svg viewBox="0 0 400 380">
+      <line class="net-line" x1="200" y1="60" x2="90" y2="150"/>
+      <line class="net-line" x1="200" y1="60" x2="310" y2="150"/>
+      <line class="net-line" x1="90" y1="150" x2="140" y2="260"/>
+      <line class="net-line" x1="310" y1="150" x2="260" y2="260"/>
+      <line class="net-line" x1="140" y1="260" x2="200" y2="330"/>
+      <line class="net-line" x1="260" y1="260" x2="200" y2="330"/>
+      <line class="net-line" x1="90" y1="150" x2="310" y2="150"/>
+      <line class="net-line" x1="140" y1="260" x2="260" y2="260"/>
+
+      <circle class="net-node net-pulse" cx="200" cy="60" r="6" style="animation-delay:0s"/>
+      <circle class="net-node net-pulse" cx="90" cy="150" r="6" style="animation-delay:.4s"/>
+      <circle class="net-node net-pulse warn" cx="310" cy="150" r="6" style="animation-delay:.8s"/>
+      <circle class="net-node net-pulse" cx="140" cy="260" r="6" style="animation-delay:1.2s"/>
+      <circle class="net-node net-pulse" cx="260" cy="260" r="6" style="animation-delay:1.6s"/>
+      <circle class="net-node net-pulse" cx="200" cy="330" r="7" style="animation-delay:2s"/>
+    </svg>
+  </div>
+</section>
+
+<section id="about">
+  <div class="eyebrow">// À propos</div>
+  <h2>Du centre de supervision au terrain académique</h2>
+  <div class="about-grid">
+    <div>
+      <p>Basé à <strong>Dakar</strong>, je travaille comme <strong>Ingénieur Front Office — Supervision RAN</strong> au GNOC de Huawei, où je surveille en temps réel les alarmes réseau (2G/3G/4G/5G) pour plusieurs opérateurs à travers l'Afrique, dont Orange.</p>
+      <p>Ce rôle m'a donné une compréhension fine des réseaux d'accès radio, de la gestion d'incidents critiques, et de la rigueur qu'exige un environnement où chaque minute d'indisponibilité compte.</p>
+      <p>Je m'apprête à rejoindre l'<strong>Université de Moncton</strong> pour un master en informatique, avec une spécialisation visée en réseaux, infrastructure et cybersécurité — la suite logique d'un parcours construit sur le terrain.</p>
+    </div>
+    <div class="info-card">
+      <div class="info-row"><span class="k">RÔLE ACTUEL</span><span class="v">Front Office Engineer — RAN</span></div>
+      <div class="info-row"><span class="k">ENTREPRISE</span><span class="v">Huawei Technologies, GNOC Dakar</span></div>
+      <div class="info-row"><span class="k">PROCHAINE ÉTAPE</span><span class="v">Master Informatique, U. de Moncton</span></div>
+      <div class="info-row"><span class="k">DOMAINES</span><span class="v">RAN, Réseaux, Cybersécurité</span></div>
+      <div class="info-row"><span class="k">STATUT</span><span class="v" style="color:var(--ok)">Disponible dès août 2026</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="eyebrow">// Compétences</div>
+  <h2>Modules techniques</h2>
+  <div class="modules">
+    <div class="module">
+      <div class="m-head"><h3>Réseaux RAN</h3><span class="badge">actif</span></div>
+      <ul>
+        <li>Supervision 2G / 3G / 4G / 5G</li>
+        <li>Gestion d'alarmes temps réel</li>
+        <li>Analyse d'incidents multi-pays</li>
+      </ul>
+    </div>
+    <div class="module">
+      <div class="m-head"><h3>Réseaux &amp; Infrastructure</h3><span class="badge">en cours</span></div>
+      <ul>
+        <li>Modèle OSI &amp; protocoles de routage</li>
+        <li>Bases CCNA / Network+</li>
+        <li>Infrastructure cloud (AWS, Azure)</li>
+      </ul>
+    </div>
+    <div class="module">
+      <div class="m-head"><h3>Cybersécurité</h3><span class="badge">en cours</span></div>
+      <ul>
+        <li>Fondamentaux sécurité réseau</li>
+        <li>Parcours de certification en cours d'exploration</li>
+        <li>Veille sur les menaces courantes</li>
+      </ul>
+    </div>
+    <div class="module">
+      <div class="m-head"><h3>Développement</h3><span class="badge">actif</span></div>
+      <ul>
+        <li>Python (automatisation, traitement de documents)</li>
+        <li>Scripts d'analyse et outils internes</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="eyebrow">// Parcours</div>
+  <h2>Expérience &amp; formation</h2>
+  <div class="timeline">
+    <div class="tl-item">
+      <span class="tl-date mono">2024 — 2026</span>
+      <h3>Front Office Engineer — Supervision RAN</h3>
+      <div class="org">Huawei Technologies · GNOC, Dakar</div>
+      <p class="desc">Supervision en temps réel des alarmes réseau (2G/3G/4G/5G) pour plusieurs pays africains, au service d'opérateurs clients dont Orange. Fin de contrat en cours en vue d'un départ pour le Canada.</p>
+    </div>
+    <div class="tl-item">
+      <span class="tl-date mono">Avant 2024</span>
+      <h3>Stage — Télécommunications</h3>
+      <div class="org">Détail à compléter</div>
+      <p class="desc">Première expérience en environnement télécom, posant les bases de la spécialisation RAN.</p>
+    </div>
+    <div class="tl-item">
+      <span class="tl-date mono">À partir de 2026</span>
+      <h3>Master en Informatique</h3>
+      <div class="org">Université de Moncton, Nouveau-Brunswick</div>
+      <p class="desc">Spécialisation visée en réseaux, infrastructure et cybersécurité. Arrivée prévue le 30 juillet 2026.</p>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="eyebrow">// Projets</div>
+  <h2>Réalisations</h2>
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-thumb">CAPTURE / VISUEL À AJOUTER</div>
+      <div class="project-body">
+        <div class="p-status"><h3>Nom du projet 1</h3><span class="status-pending">à compléter</span></div>
+        <p>Décris ici le problème résolu, ton rôle, et le résultat obtenu. Deux à trois phrases suffisent.</p>
+        <div class="project-tags"><span class="tag">techno</span><span class="tag">techno</span></div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-thumb">CAPTURE / VISUEL À AJOUTER</div>
+      <div class="project-body">
+        <div class="p-status"><h3>Nom du projet 2</h3><span class="status-pending">à compléter</span></div>
+        <p>Décris ici le problème résolu, ton rôle, et le résultat obtenu. Deux à trois phrases suffisent.</p>
+        <div class="project-tags"><span class="tag">techno</span><span class="tag">techno</span></div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-thumb">CAPTURE / VISUEL À AJOUTER</div>
+      <div class="project-body">
+        <div class="p-status"><h3>Nom du projet 3</h3><span class="status-pending">à compléter</span></div>
+        <p>Décris ici le problème résolu, ton rôle, et le résultat obtenu. Deux à trois phrases suffisent.</p>
+        <div class="project-tags"><span class="tag">techno</span><span class="tag">techno</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="eyebrow">// Contact</div>
+  <h2>Discutons</h2>
+  <div class="contact-wrap">
+    <p style="color:var(--text-muted); max-width:56ch;">Actuellement en transition entre Dakar et Moncton — ouvert aux échanges, opportunités et collaborations en réseaux, télécoms ou cybersécurité.</p>
+    <div class="contact-links">
+      <a href="mailto:ton.email@exemple.com" class="btn btn-ghost">✉ Email</a>
+      <a href="#" class="btn btn-ghost">LinkedIn</a>
+      <a href="#" class="btn btn-ghost">GitHub</a>
+      <a href="#cv-download" id="cv-download" class="btn btn-primary">Télécharger le CV (PDF)</a>
+    </div>
+  </div>
+</section>
+
+<footer>DJEFFERSON.SYS — Dernière mise à jour : Juillet 2026</footer>
+
+</body>
+</html>
